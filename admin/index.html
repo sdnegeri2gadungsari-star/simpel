@@ -1,0 +1,43 @@
+<!doctype html>
+<html lang="id">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>SIMPEL SDN 2 Gadungsari</title>
+<meta name="description" content="Sistem Informasi dan Manajemen Pembelajaran SD Negeri 2 Gadungsari, Tirtoyudo, Malang">
+<meta name="theme-color" content="#0a2f66">
+<link rel="icon" href="/favicon.ico" sizes="any">
+<link rel="icon" type="image/png" sizes="32x32" href="/favicon-32.png">
+<link rel="icon" type="image/png" sizes="192x192" href="/favicon-192.png">
+<link rel="apple-touch-icon" href="/apple-touch-icon.png">
+<link rel="manifest" href="/manifest.webmanifest">
+<style>
+html,body{margin:0;height:100%;background:#0a2f66;overflow:hidden}
+iframe{position:fixed;inset:0;width:100%;height:100%;border:0;background:#f4f7fc}
+#ld{position:fixed;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:14px;color:#fff;font:600 15px system-ui,sans-serif;background:#0a2f66;transition:opacity .4s}
+#ld i{width:34px;height:34px;border-radius:50%;border:4px solid rgba(255,255,255,.25);border-top-color:#fff;animation:s .9s linear infinite}
+#ld a{color:#9cc7ff;font-size:13px;font-weight:500}
+@keyframes s{to{transform:rotate(360deg)}}
+</style>
+</head>
+<body>
+<div id="ld"><i></i><span>Memuat SIMPEL…</span><a id="dr" href="#" style="display:none">Tidak tampil? Buka langsung</a></div>
+<script>
+/* ====== GANTI SATU BARIS INI dengan alamat /exec deployment SIMPEL Bapak ====== */
+var EXEC='https://script.google.com/macros/s/AKfycbwThmaNVSxqqtge8L6V9g6kFZl_pSS-JQSQrAUP4t-N2yb5Bq70rpoYI01clU04EuVwvQ/exec';
+/* =============================================================================== */
+var MODE='admin';   // '' = halaman informasi publik | 'login' = langsung menu login | guru | kepsek | admin | ortu
+(function(){
+  var url=EXEC+(MODE?('?mode='+MODE+(location.search?'&'+location.search.slice(1):'')):(location.search||''));   // ?qr=…, ?tugas=… dsb. ikut diteruskan
+  var f=document.createElement('iframe');
+  f.src=url;f.title='SIMPEL SDN 2 Gadungsari';
+  f.setAttribute('allow','geolocation; camera; microphone; clipboard-write; fullscreen; autoplay');
+  f.setAttribute('allowfullscreen','');
+  f.onload=function(){var l=document.getElementById('ld');l.style.opacity=0;setTimeout(function(){l.style.display='none'},450)};
+  document.body.appendChild(f);
+  var d=document.getElementById('dr');d.href=url;setTimeout(function(){d.style.display='block'},8000);
+})();
+</script>
+<noscript><a href="https://script.google.com/">Aktifkan JavaScript untuk membuka SIMPEL.</a></noscript>
+</body>
+</html>
