@@ -26,8 +26,12 @@ iframe{position:fixed;inset:0;width:100%;height:100%;border:0;background:#f4f7fc
 /* ====== GANTI SATU BARIS INI dengan alamat /exec deployment SIMPEL Bapak ====== */
 var EXEC='https://script.google.com/macros/s/AKfycbwThmaNVSxqqtge8L6V9g6kFZl_pSS-JQSQrAUP4t-N2yb5Bq70rpoYI01clU04EuVwvQ/exec';
 /* =============================================================================== */
+var MODE='';   // '' = halaman informasi publik | 'login' = langsung menu login | guru | kepsek | admin | ortu
+var HALAMAN=['profil','gtk','berita','agenda','prestasi','galeri','layanan','download','kontak'];   // alamat: /profil, /berita, …
 (function(){
-  var url=EXEC+(location.search||'');   // ?ortu=1, ?absen=… dsb. ikut diteruskan
+  var seg=location.pathname.replace(/^\/+|\/+$/g,'').toLowerCase(), hal=HALAMAN.indexOf(seg)>=0?seg:'';
+  var ps=[]; if(MODE)ps.push('mode='+MODE); if(hal)ps.push('halaman='+hal); if(location.search)ps.push(location.search.slice(1));   // ?qr=…, ?tugas=… dsb. ikut diteruskan
+  var url=EXEC+(ps.length?('?'+ps.join('&')):'');
   var f=document.createElement('iframe');
   f.src=url;f.title='SIMPEL SDN 2 Gadungsari';
   f.setAttribute('allow','geolocation; camera; microphone; clipboard-write; fullscreen; autoplay');
@@ -35,6 +39,16 @@ var EXEC='https://script.google.com/macros/s/AKfycbwThmaNVSxqqtge8L6V9g6kFZl_pSS
   f.onload=function(){var l=document.getElementById('ld');l.style.opacity=0;setTimeout(function(){l.style.display='none'},450)};
   document.body.appendChild(f);
   var d=document.getElementById('dr');d.href=url;setTimeout(function(){d.style.display='block'},8000);
+  /* aplikasi memberi tahu halaman yang sedang dibuka → alamat di browser ikut berubah (tanpa memuat ulang) */
+  window.addEventListener('message',function(e){
+    var m=e.data;if(!m||m.simpel!=='halaman')return;
+    try{var host=new URL(e.origin).hostname}catch(x){return}
+    if(!/(^|\.)(googleusercontent|google)\.com$/.test(host))return;
+    var k=String(m.h||''),path=HALAMAN.indexOf(k)>=0?('/'+k+'/'):'/';
+    if(location.pathname!==path)history.pushState({h:k},'',path+location.search);
+    if(m.t)document.title=String(m.t).slice(0,120);
+  });
+  window.addEventListener('popstate',function(){location.reload()});   // tombol Kembali/Maju browser
 })();
 </script>
 <noscript><a href="https://script.google.com/">Aktifkan JavaScript untuk membuka SIMPEL.</a></noscript>
