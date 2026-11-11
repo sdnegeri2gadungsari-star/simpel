@@ -1,0 +1,45 @@
+PASANG SIMPEL DI GITHUB PAGES DENGAN DOMAIN SENDIRI (TANPA SUBDOMAIN)
+
+A. Siapkan repositori
+ 1. Login github.com → New repository → nama bebas (mis. "simpel") → Public → Create.
+ 2. Add file → Upload files → unggah index.html, 404.html, CNAME (dari folder ini) → Commit.
+ 3. Buka index.html di GitHub → ikon pensil → ganti baris EXEC dengan alamat /exec deployment SIMPEL
+    (Apps Script → Terapkan → Kelola deployment → salin "URL Aplikasi Web") → Commit.
+ 4. Buka file CNAME → ganti isinya dengan domain Bapak persis, mis.  sdn2gadungsari.sch.id  (satu baris, tanpa https://, tanpa www).
+
+B. Aktifkan Pages
+ 5. Settings → Pages → Source: "Deploy from a branch" → Branch: main, folder / (root) → Save.
+ 6. Di kolom "Custom domain" isi domain Bapak → Save. Centang "Enforce HTTPS" bila sudah aktif (menunggu beberapa menit–jam).
+
+C. Atur DNS di tempat domain dikelola (domain tanpa subdomain = "apex/root", simbol @)
+ Hapus A/AAAA lama untuk @ bila ada, lalu tambahkan:
+   Tipe A     Nama @    Nilai 185.199.108.153
+   Tipe A     Nama @    Nilai 185.199.109.153
+   Tipe A     Nama @    Nilai 185.199.110.153
+   Tipe A     Nama @    Nilai 185.199.111.153
+   (opsional IPv6)  Tipe AAAA  Nama @  2606:50c0:8000::153, 2606:50c0:8001::153, 2606:50c0:8002::153, 2606:50c0:8003::153
+   (opsional agar www ikut)  Tipe CNAME  Nama www  Nilai  USERNAME-GITHUB.github.io
+ Tunggu propagasi (biasanya <1 jam, maks 24 jam). Cek alamat IP terbaru di dokumentasi GitHub Pages bila ragu.
+
+D. Tanpa domain sendiri
+ Cukup lewati langkah 4, 6 dan C: SIMPEL tampil di https://USERNAME-GITHUB.github.io/simpel/ .
+ (Hapus file CNAME.)
+
+E. WAJIB DIUJI di HP guru setelah aktif
+ Absensi GPS & kamera/wajah berjalan di dalam iframe. Bila izin lokasi/kamera ditolak,
+ pakai alamat Apps Script langsung untuk menu absensi, atau pakai redirect biasa.
+
+F. Favicon (ikon tab)
+ Unggah SEMUA file di folder ini ke repositori (index.html, 404.html, CNAME, manifest.webmanifest, favicon.ico,
+ favicon-32.png, favicon-192.png, favicon-512.png, apple-touch-icon.png). Ikon dari logo sekolah. Bila ikon lama masih tampil, muat ulang paksa (Ctrl+F5) atau tutup-buka tab.
+
+G. Alamat langsung ke menu login (satu domain, tanpa subdomain)
+ Tempel LoginLangsung_PASTE.html di Index (sebelum </body> paling bawah), lalu Terapkan → Versi baru.
+ Unggah juga folder login, guru, kepsek, admin, ortu ke repositori (Add file → Upload files, seret foldernya). Hasilnya:
+   sdn2gadungsari.sch.id          → halaman informasi publik (ada bar login di atas)
+   sdn2gadungsari.sch.id/login/   → langsung menu login SIMPEL
+   sdn2gadungsari.sch.id/guru/    → langsung Login Guru
+   sdn2gadungsari.sch.id/kepsek/  → langsung Login Kepala Sekolah
+   sdn2gadungsari.sch.id/admin/   → langsung Login Admin
+   sdn2gadungsari.sch.id/ortu/    → langsung Portal Orang Tua
+ Ingin alamat utama langsung login? Di index.html (root) ubah  var MODE='';  menjadi  var MODE='login';
