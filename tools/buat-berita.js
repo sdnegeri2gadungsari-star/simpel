@@ -20,7 +20,7 @@ header nav a{opacity:.9}main{padding:22px 18px 40px}.crumb{font-size:13px;color:
 article{background:#fff;border:1px solid #dce7f3;border-radius:18px;padding:24px 26px;box-shadow:0 8px 24px rgba(28,67,106,.06)}
 .tag{display:inline-block;font-size:12px;font-weight:700;color:#0e4b9a;background:#e6f2ff;border-radius:999px;padding:3px 11px}
 h1{margin:10px 0 4px;font-size:clamp(24px,4vw,32px);line-height:1.25;color:#0e2a52}.tg{color:#61738c;font-size:14px;margin-bottom:16px}
-article img.h{width:100%;height:auto;border-radius:14px;margin:6px 0 16px;display:block}article p{margin:0 0 14px;overflow-wrap:anywhere}
+article img.h{width:100%;height:auto;border-radius:14px;margin:6px 0 16px;display:block}article p{margin:0 0 14px;overflow-wrap:anywhere}article p.lead{font-weight:600;color:#0e2a52;font-size:17px}
 .bt{display:flex;gap:10px;flex-wrap:wrap;margin-top:18px}.bt a{display:inline-block;padding:10px 18px;border-radius:12px;font-weight:700;text-decoration:none;font-size:14px;background:#1479dc;color:#fff}.bt a.s{background:#e6f2ff;color:#0e4b9a}
 h2{font-size:18px;margin:28px 0 8px;color:#0e2a52}ul.l{list-style:none;margin:0;padding:0}ul.l li{padding:10px 0;border-bottom:1px solid #e3ebf5}ul.l a{color:#0e4b9a;font-weight:600;text-decoration:none}ul.l small{display:block;color:#61738c}
 footer{background:#0a2f66;color:#cfe0f7;font-size:13px;padding:18px 0}footer a{color:#9cc7ff}`;
@@ -62,8 +62,10 @@ function halaman(it,s,lain){
   const url=`${SITE}/berita/${s}/`,desc=ringkas(it.ringkasan||it.judul,158),og=it.gambar||SITE+'/favicon-512.png',jn=it.jenis==='PENGUMUMAN'?'Pengumuman':'Berita';
   const ld={'@context':'https://schema.org','@type':'NewsArticle',headline:it.judul.slice(0,110),description:desc,inLanguage:'id',mainEntityOfPage:url,
     author:{'@type':'Organization',name:'SD Negeri 2 Gadungsari'},publisher:{'@type':'Organization',name:'SD Negeri 2 Gadungsari',logo:{'@type':'ImageObject',url:SITE+'/favicon-512.png'}}};
+  if(it.isi)ld.articleBody=it.isi.slice(0,5000);
   if(it.tanggal){ld.datePublished=it.tanggal;ld.dateModified=it.tanggal}if(it.gambar)ld.image=[it.gambar];
-  const isi=String(it.ringkasan||'').split(/\n{1,}/).map(x=>x.trim()).filter(Boolean).map(x=>`<p>${E(x)}</p>`).join('\n')||`<p>${E(it.judul)}</p>`;
+  const para=s=>String(s||'').split(/\n+/).map(x=>x.trim()).filter(Boolean).map(x=>`<p>${E(x)}</p>`).join('\n');
+  const isi=(it.isi?(it.ringkasan?`<p class="lead">${E(it.ringkasan.replace(/\s*\n+\s*/g,' '))}</p>\n`:'')+para(it.isi):para(it.ringkasan))||`<p>${E(it.judul)}</p>`;
   const rel=lain.filter(x=>x.s!==s).slice(0,6).map(x=>`<li><a href="/berita/${x.s}/">${E(x.it.judul)}</a>${x.it.tanggal?`<small>${tgl(x.it.tanggal)}</small>`:''}</li>`).join('');
   return kepala(`${it.judul} — SD Negeri 2 Gadungsari`,desc,url,og,`<script type="application/ld+json">${JSON.stringify(ld).replace(/</g,'\\u003c')}</script>\n`)
   +`<main><div class="crumb"><a href="/">Beranda</a> › <a href="/berita/">Berita</a> › ${E(jn)}</div>
