@@ -93,13 +93,16 @@ ${rel?`<h2>Berita lainnya</h2><ul class="l">${rel}</ul>`:''}</main>
   daftar.forEach(({it,s})=>{fs.mkdirSync(path.join(dir,s),{recursive:true});fs.writeFileSync(path.join(dir,s,'index.html'),halaman(it,s,daftar))});
   fs.writeFileSync(path.join(dir,'_peta.json'),JSON.stringify(peta,null,1)+'\n');
   /* daftar tautan statis di /berita/ (terbaca Google, disembunyikan secara visual karena aplikasi menutupi halaman) */
-  const f=path.join(dir,'index.html');let h=fs.readFileSync(f,'utf8');
+  const f=path.join(dir,'index.html');
+  if(!fs.existsSync(f)){console.warn('PERINGATAN: berita/index.html tidak ada di repositori — daftar tautan dilewati. Unggah folder berita/ dari paket.')}else{
+  let h=fs.readFileSync(f,'utf8');
   const blok=`<!--BL--><section id="bl" style="position:absolute;left:-9999px;top:0;width:1px;height:1px;overflow:hidden"><h2>Berita dan Pengumuman Terbaru</h2><ul>${daftar.slice(0,60).map(({it,s})=>`<li><a href="/berita/${s}/">${E(it.judul)}</a>${it.tanggal?' — '+tgl(it.tanggal):''}</li>`).join('')}</ul></section><!--/BL-->`;
   h=/<!--BL-->[\s\S]*?<!--\/BL-->/.test(h)?h.replace(/<!--BL-->[\s\S]*?<!--\/BL-->/,()=>blok):h.replace(/<script>\s*\/\* ====== GANTI/,()=>blok+'\n<script>\n/* ====== GANTI');
-  if(!h.includes('<!--BL-->')){console.error('Gagal menyisipkan daftar ke berita/index.html');process.exit(1)}
-  fs.writeFileSync(f,h);
+  if(!h.includes('<!--BL-->'))console.warn('PERINGATAN: gagal menyisipkan daftar ke berita/index.html');else fs.writeFileSync(f,h);
+  }
   /* sitemap: pertahankan halaman tetap, ganti entri berita */
-  const sf=path.join(ROOT,'sitemap.xml');let sm=fs.readFileSync(sf,'utf8').split('\n').filter(l=>!/\/berita\/[^/<]+\/<\/loc>/.test(l)).join('\n');
+  const sf=path.join(ROOT,'sitemap.xml');if(!fs.existsSync(sf)){console.warn('PERINGATAN: sitemap.xml tidak ada — dilewati.');console.log('Selesai:',daftar.length,'halaman berita dibuat/diperbarui.');return}
+  let sm=fs.readFileSync(sf,'utf8').split('\n').filter(l=>!/\/berita\/[^/<]+\/<\/loc>/.test(l)).join('\n');
   const ent=daftar.map(({it,s})=>`  <url><loc>${SITE}/berita/${s}/</loc>${it.tanggal?`<lastmod>${it.tanggal}</lastmod>`:''}<changefreq>monthly</changefreq><priority>0.6</priority></url>`).join('\n');
   sm=sm.replace('</urlset>',ent+'\n</urlset>').replace(/\n{2,}/g,'\n');
   fs.writeFileSync(sf,sm);
