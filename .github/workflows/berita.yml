@@ -1,0 +1,21 @@
+name: Buat halaman berita statis
+on:
+  schedule:
+    - cron: '17 21 * * *'      # tiap hari 04.17 WIB
+  workflow_dispatch: {}        # bisa dijalankan manual: tab Actions → Buat halaman berita statis → Run workflow
+permissions:
+  contents: write
+jobs:
+  berita:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with: { node-version: '20' }
+      - run: node tools/buat-berita.js
+      - name: Simpan bila ada perubahan
+        run: |
+          git config user.name "simpel-bot"
+          git config user.email "simpel-bot@users.noreply.github.com"
+          git add -A
+          git diff --cached --quiet || (git commit -m "Perbarui halaman berita statis" && git push)
